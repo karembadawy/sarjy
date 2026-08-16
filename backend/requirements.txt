@@ -1,0 +1,18 @@
+# Phase 0 — credential verification.
+python-dotenv==1.2.2
+httpx==0.28.1
+sqlalchemy==2.0.52
+psycopg2-binary==2.9.12
+
+# Phase 1 — text-only brain loop (API + Gemini + tests).
+fastapi==0.141.1
+uvicorn[standard]==0.52.3
+google-genai==2.18.1
+pytest==9.1.1
+
+# Phase 2 — streaming voice loop. Deepgram live transcription over WebSocket.
+deepgram-sdk==7.7.0
+
+# Phase 4 — timezone-aware bookings. python:3.14-slim is not guaranteed to carry the system
+# tz database, and zoneinfo falls back to this package when /usr/share/zoneinfo is missing.
+tzdata==2026.3

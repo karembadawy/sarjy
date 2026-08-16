@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sarjy · Web Speech API harness</title>
+    <style>
+      :root {
+        --ink: #0b0d10; --ink-2: #14181d; --ink-3: #1e242b; --line: #2a323b;
+        --cream: #ece6da; --muted: #8b95a1; --amber: #f2b544; --green: #4ade80;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0 auto; padding: 32px 24px 80px; max-width: 900px;
+        background: var(--ink); color: var(--cream);
+        font: 16px/1.55 -apple-system, "Segoe UI", system-ui, sans-serif;
+      }
+      h1 { font-size: 22px; margin: 0 0 4px; }
+      .lede { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+      .warn {
+        border: 1px solid #b45309; background: #b4530918; color: #fbbf24;
+        border-radius: 12px; padding: 14px 18px; font-size: 14px; margin-bottom: 24px;
+      }
+      .item {
+        border: 1px solid var(--line); border-radius: 16px; background: var(--ink-2);
+        padding: 18px 20px; margin-bottom: 14px;
+      }
+      .item.current { border-color: var(--amber); }
+      .head { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+      .head .name { font-family: ui-monospace, monospace; color: var(--cream); }
+      .said { font-size: 20px; margin: 10px 0 12px; }
+      .heard { font-size: 17px; color: var(--green); min-height: 26px; }
+      .heard.empty { color: var(--muted); font-style: italic; font-size: 15px; }
+      .lang {
+        font-family: ui-monospace, monospace; font-size: 11px; padding: 2px 8px;
+        border: 1px solid var(--line); border-radius: 999px;
+      }
+      .controls { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+      button {
+        font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+        background: transparent; color: var(--cream); border: 1px solid var(--line);
+      }
+      button.primary { background: var(--amber); color: #1a1205; border-color: var(--amber); font-weight: 600; }
+      button:disabled { opacity: 0.4; cursor: not-allowed; }
+      input[type="text"] {
+        flex: 1; min-width: 260px; font: inherit; font-size: 14px; padding: 8px 12px;
+        background: var(--ink-3); color: var(--cream); border: 1px solid var(--line); border-radius: 10px;
+      }
+      .status { margin: 16px 0; color: var(--muted); font-size: 14px; min-height: 20px; }
+      code { font-family: ui-monospace, monospace; font-size: 13px; color: var(--amber); }
+    </style>
+  </head>
+  <body>
+    <h1>Web Speech API harness</h1>
+    <p class="lede">
+      The browser's own recogniser cannot be pointed at a file — it only hears a live
+      microphone. So this page plays each recording out loud through the speakers and lets
+      Chrome's recogniser listen to the room, which is a <strong>manual protocol</strong> and is
+      labelled as one in <code>eval/results.md</code>. Ten utterances, covering all three groups.
+    </p>
+
+    <div class="warn">
+      Before you start: turn the speakers up to a normal talking volume, and do not talk over it.
+      Chrome may cancel its own speaker output as echo — if every row comes back empty, that is
+      what happened, and the honest move is to record it as a gap rather than fake the rows.
+      Web Speech has no code-switching mode at all, so each clip is run in the language of its
+      group, and the <em>mixed</em> clips are run in <strong>both</strong> <code>ar-EG</code> and
+      <code>en-US</code>.
+    </div>
+
+    <div class="status" id="status">loading…</div>
+    <div id="items"></div>
+
+    <script>
+      // The labelled subset: ten utterances across all three groups, including one D-047
+      // entity-class sentence and two fast ones. Named here rather than sampled, so a re-run
+      // measures the same clips.
+      const SUBSET = {
+        ar_01: ["ar-EG"], ar_02: ["ar-EG"], ar_09: ["ar-EG"],
+        en_01: ["en-US"], en_02: ["en-US"], en_09: ["en-US"],
+        mx_01: ["ar-EG", "en-US"], mx_02: ["ar-EG", "en-US"],
+        mx_03: ["ar-EG", "en-US"], mx_09: ["ar-EG", "en-US"],
+      };
+
+      const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+      const $ = (id) => document.getElementById(id);
+      let rows = [];
+
+      function say(text) { $("status").textContent = text; }
+
+      async function load() {
+        if (!Recognition) {
+          say("This browser has no Web Speech API. Chrome is the one that does.");
+          return;
+        }
+        const script = await (await fetch("/api/script")).json();
+        rows = [];
+        for (const [filename, langs] of Object.entries(SUBSET)) {
+          const row = script.find((r) => r.filename === filename);
+          if (!row) continue;
+          for (const lang of langs) rows.push({ ...row, lang, heard: "", done: false });
+        }
+        render();
+        const missing = rows.filter((r) => !r.recorded).length;
+        say(
+          `${rows.length} runs over ${Object.keys(SUBSET).length} utterances` +
+          (missing ? ` · ${missing} have no recording yet` : "") +
+          " · press Run on each, or Run all.",
+        );
+      }
+
+      function render() {
+        const container = $("items");
+        container.innerHTML = "";
+
+        const runAll = document.createElement("button");
+        runAll.className = "primary";
+        runAll.textContent = "▶ Run all, one after another";
+        runAll.onclick = async () => {
+          for (let i = 0; i < rows.length; i++) {
+            if (rows[i].recorded) await runOne(i);
+          }
+          say("finished the whole subset.");
+        };
+        container.append(runAll);
+
+        rows.forEach((row, index) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.id = `item-${index}`;
+          item.innerHTML = `
+            <div class="head">
+              <span class="name">${row.filename}</span>
+              <span>${row.group} · ${row.condition}</span>
+              <span class="lang">${row.lang}</span>
+              ${row.recorded ? "" : "<span>— no recording</span>"}
+            </div>
+            <div class="said" dir="auto">${row.text}</div>
+            <div class="heard ${row.heard ? "" : "empty"}" dir="auto">
+              ${row.heard || "nothing heard yet"}
+            </div>
+            <div class="controls">
+              <button data-run="${index}" ${row.recorded ? "" : "disabled"}>▶ Play &amp; listen</button>
+              <input type="text" data-fix="${index}" placeholder="correct it by hand if needed"
+                     value="${(row.heard || "").replace(/"/g, "&quot;")}" />
+              <button data-save="${index}">Save row</button>
+            </div>`;
+          container.append(item);
+        });
+
+        container.querySelectorAll("[data-run]").forEach((button) => {
+          button.onclick = () => runOne(Number(button.dataset.run));
+        });
+        container.querySelectorAll("[data-save]").forEach((button) => {
+          button.onclick = () => {
+            const index = Number(button.dataset.save);
+            const field = container.querySelector(`[data-fix="${index}"]`);
+            rows[index].heard = field.value.trim();
+            save(rows[index], "hand-corrected");
+          };
+        });
+      }
+
+      /** Play one recording out loud and let Chrome's recogniser listen to the room. */
+      function runOne(index) {
+        const row = rows[index];
+        return new Promise((resolve) => {
+          document.querySelectorAll(".item").forEach((e) => e.classList.remove("current"));
+          $(`item-${index}`)?.classList.add("current");
+          $(`item-${index}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          say(`${row.filename} [${row.lang}] — listening…`);
+
+          const recogniser = new Recognition();
+          recogniser.lang = row.lang;
+          recogniser.interimResults = true;
+          recogniser.continuous = false;
+          recogniser.maxAlternatives = 1;
+
+          let heard = "";
+          let note = "";
+
+          recogniser.onresult = (event) => {
+            heard = Array.from(event.results)
+              .map((result) => result[0].transcript)
+              .join(" ")
+              .trim();
+            const element = $(`item-${index}`).querySelector(".heard");
+            element.textContent = heard;
+            element.className = "heard";
+          };
+          recogniser.onerror = (event) => {
+            note = `error: ${event.error}`;
+            say(`${row.filename} [${row.lang}] — ${note}`);
+          };
+          recogniser.onend = async () => {
+            row.heard = heard;
+            row.done = true;
+            const field = document.querySelector(`[data-fix="${index}"]`);
+            if (field) field.value = heard;
+            if (!heard) {
+              const element = $(`item-${index}`).querySelector(".heard");
+              element.textContent = "nothing heard";
+              element.className = "heard empty";
+            }
+            await save(row, note);
+            resolve();
+          };
+
+          recogniser.start();
+
+          // A moment for the recogniser to actually open the microphone before the clip
+          // starts, and a moment afterwards before it is closed — the first and last word
+          // are the ones a tight window eats.
+          const audio = new Audio(`/recordings/${row.filename}.wav?t=${Date.now()}`);
+          setTimeout(() => audio.play().catch((error) => { note = `playback: ${error}`; }), 400);
+          audio.onended = () => setTimeout(() => recogniser.stop(), 1200);
+          // A clip that never loads must not hang the queue.
+          audio.onerror = () => setTimeout(() => recogniser.stop(), 200);
+        });
+      }
+
+      async function save(row, note) {
+        await fetch("/api/webspeech", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: row.filename, lang: row.lang, heard: row.heard || "", note: note || "",
+          }),
+        });
+        say(`saved ${row.filename} [${row.lang}] · ${row.heard || "(nothing)"}`);
+      }
+
+      load();
+    </script>
+  </body>
+</html>

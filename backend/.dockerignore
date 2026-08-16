@@ -1,0 +1,20 @@
+# Nothing here should ever reach the image.
+
+# --- Secrets. The image must be safe to push to a public registry (golden rule 1). ---
+.env
+.env.*
+
+# --- Local interpreter and caches ---
+venv/
+.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+pytest.ini
+
+# --- Not part of the running service ---
+tests/
+scripts/
+Dockerfile
+.dockerignore

@@ -1,0 +1,26 @@
+# What `gcloud run deploy --source` uploads to Cloud Build.
+#
+# This file exists and is explicit for one reason: gcloud does NOT read .dockerignore when
+# it packs a source deploy, and the build context it uploads is stored in a Cloud Storage
+# bucket. An .env that reached that bucket would be a secret checked into infrastructure,
+# which golden rule 1 does not distinguish from a secret checked into git.
+
+# --- Secrets, first and loudest ---
+.env
+.env.*
+
+# --- Local interpreter and caches ---
+venv/
+.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# --- Not part of the running service ---
+tests/
+scripts/
+pytest.ini
+.git
+.gitignore
+.gcloudignore

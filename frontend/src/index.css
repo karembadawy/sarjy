@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------------------
+   Visual identity — Arabic-futuristic (product.md §4, D-015).
+   Near-black canvas · one warm amber/gold accent · Cairo Arabic-first typography.
+   Tailwind v4 is configured here in CSS, not in a tailwind.config.js (D-029): every token
+   below is usable as a normal utility, e.g. bg-ink-900, text-amber, font-sans.
+--------------------------------------------------------------------------------------- */
+@theme {
+  /* The canvas: near-black, very slightly warm-violet so it does not read as flat grey. */
+  --color-ink-950: #08070a;
+  --color-ink-900: #0e0d12;
+  --color-ink-800: #16151c;
+  --color-ink-700: #221f2b;
+  --color-ink-600: #322e3d;
+
+  /* The one accent. Amber/gold — used sparingly: it must stay special. */
+  --color-amber: #f0b429;
+  --color-amber-soft: #f7cf6b;
+  --color-amber-dim: #8a6516;
+
+  --color-cream: #f4efe6;
+  --color-muted: #9c96a8;
+
+  /* Cairo carries Arabic and Latin in one family, so mixed-direction lines keep an even
+     colour and weight instead of visibly switching typeface mid-sentence. */
+  --font-sans: 'Cairo', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+
+  --radius-bubble: 1.15rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-ink-950);
+  }
+
+  body {
+    @apply bg-ink-950 text-cream font-sans antialiased;
+    /* A single soft amber bloom behind the content — the whole "futuristic" budget. */
+    background-image: radial-gradient(
+      60rem 40rem at 50% -12rem,
+      rgba(240, 180, 41, 0.09),
+      transparent 70%
+    );
+    background-attachment: fixed;
+  }
+
+  /* Arabic at the same nominal size reads smaller than Latin; Cairo needs a little more
+     line height to keep diacritics and descenders off each other. */
+  :lang(ar),
+  [dir='rtl'] {
+    line-height: 1.85;
+  }
+
+  ::selection {
+    background-color: rgba(240, 180, 41, 0.28);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-ink-700);
+    border-radius: 9999px;
+  }
+}

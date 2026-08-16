@@ -1,0 +1,33 @@
+# --- Secrets (never commit) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- Node / frontend ---
+node_modules/
+dist/
+.vite/
+
+# --- Deploy tooling ---
+.vercel/
+
+# --- Eval assets (large audio, kept out of git) ---
+eval/recordings/*
+!eval/recordings/.gitkeep
+
+# --- OS / editor ---
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# --- Local agent instructions (kept out of git) ---
+CLAUDE.md

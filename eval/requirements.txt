@@ -1,0 +1,10 @@
+# Benchmark-only dependencies (Phase 5). Deliberately NOT in backend/requirements.txt: that
+# file is what the Cloud Run image installs, and nothing here runs in production.
+#
+#     backend/venv/bin/pip install -r eval/requirements.txt
+#
+# Everything else the benchmark needs — the Deepgram SDK, google-genai, httpx — is already a
+# backend dependency, and it is the *same* pinned client the product uses, which is the point.
+
+# Word Error Rate. Used for the raw / normalized / borrow-tolerant passes in scoring.py.
+jiwer==4.0.0

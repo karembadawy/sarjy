@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 430" width="1180" height="430" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a7a5c"/>
+    </marker>
+    <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#c8912f"/>
+    </marker>
+  </defs>
+
+  <rect width="1180" height="430" fill="#ffffff"/>
+
+  <!-- ========== browser ========== -->
+  <rect x="16" y="60" width="212" height="228" rx="10" fill="#fbf8f2" stroke="#3a3428" stroke-width="1.4"/>
+  <text x="122" y="86" text-anchor="middle" font-size="16" font-weight="700" fill="#1b1811">Browser</text>
+  <text x="122" y="104" text-anchor="middle" font-size="11.5" fill="#6b6352">React + Vite · Vercel</text>
+  <line x1="34" y1="116" x2="210" y2="116" stroke="#ddd5c4"/>
+  <text x="34" y="140" font-size="12.5" fill="#2b2619">MediaRecorder · WebM/Opus</text>
+  <text x="34" y="162" font-size="12.5" fill="#2b2619">echoCancellation: true</text>
+  <text x="34" y="184" font-size="12.5" fill="#2b2619">one &lt;audio&gt; element, unlocked</text>
+  <text x="34" y="200" font-size="12.5" fill="#2b2619">inside the tap (iOS, D-050)</text>
+  <text x="34" y="222" font-size="12.5" fill="#2b2619">bidi transcript: dominant</text>
+  <text x="34" y="238" font-size="12.5" fill="#2b2619">base dir + &lt;bdi&gt; runs</text>
+  <text x="34" y="266" font-size="12.5" fill="#8a6a1a" font-weight="600">localStorage UUID = identity</text>
+
+  <!-- ========== websocket spine ========== -->
+  <rect x="248" y="146" width="118" height="58" rx="8" fill="#fdf6e6" stroke="#c8912f" stroke-width="1.6"/>
+  <text x="307" y="170" text-anchor="middle" font-size="14" font-weight="700" fill="#5c4310">WS /ws</text>
+  <text x="307" y="190" text-anchor="middle" font-size="11" fill="#8a6a1a">one per call</text>
+
+  <path d="M232 162 H244" stroke="#c8912f" stroke-width="1.8" marker-end="url(#aw)"/>
+  <path d="M244 190 H232" stroke="#c8912f" stroke-width="1.8" marker-end="url(#aw)"/>
+  <text x="238" y="134" text-anchor="middle" font-size="10.5" fill="#8a6a1a">audio ↑</text>
+  <text x="238" y="222" text-anchor="middle" font-size="10.5" fill="#8a6a1a">wav ↓</text>
+
+  <!-- ========== backend container ========== -->
+  <rect x="388" y="34" width="530" height="368" rx="12" fill="#fcfbf7" stroke="#3a3428" stroke-width="1.4"/>
+  <text x="406" y="58" font-size="15" font-weight="700" fill="#1b1811">FastAPI · Cloud Run europe-west1</text>
+  <text x="406" y="76" font-size="11.5" fill="#6b6352">pipeline.py — one turn, start to finish</text>
+
+  <!-- racer -->
+  <rect x="406" y="92" width="228" height="118" rx="9" fill="#ffffff" stroke="#7a6c4e" stroke-width="1.2"/>
+  <text x="420" y="114" font-size="13.5" font-weight="700" fill="#1b1811">Speech: the racer</text>
+  <rect x="420" y="126" width="94" height="30" rx="6" fill="#f3ede0" stroke="#a8935f"/>
+  <text x="467" y="146" text-anchor="middle" font-size="12" fill="#2b2619">Deepgram ar</text>
+  <rect x="524" y="126" width="94" height="30" rx="6" fill="#f3ede0" stroke="#a8935f"/>
+  <text x="571" y="146" text-anchor="middle" font-size="12" fill="#2b2619">Deepgram en</text>
+  <text x="420" y="176" font-size="11.5" fill="#5c5340">every chunk fanned to both;</text>
+  <text x="420" y="192" font-size="11.5" fill="#5c5340">winner = confidence × words (D-045)</text>
+
+  <!-- brain -->
+  <rect x="406" y="224" width="228" height="106" rx="9" fill="#ffffff" stroke="#7a6c4e" stroke-width="1.2"/>
+  <text x="420" y="246" font-size="13.5" font-weight="700" fill="#1b1811">Brain: Gemini 3.7 Flash</text>
+  <text x="420" y="266" font-size="11.5" fill="#5c5340">persona prompt + all known facts</text>
+  <text x="420" y="286" font-size="11.5" fill="#5c5340">function calling, 4 tools, manual loop</text>
+  <text x="420" y="306" font-size="11.5" fill="#5c5340">→ get_weather · get_prayer_times</text>
+  <text x="420" y="322" font-size="11.5" fill="#5c5340">→ create_booking · list_bookings</text>
+
+  <!-- voice router -->
+  <rect x="654" y="92" width="248" height="118" rx="9" fill="#ffffff" stroke="#7a6c4e" stroke-width="1.2"/>
+  <text x="668" y="114" font-size="13.5" font-weight="700" fill="#1b1811">Voice: provider router</text>
+  <text x="668" y="134" font-size="11.5" fill="#5c5340">Gemini TTS (default) → ElevenLabs</text>
+  <text x="668" y="150" font-size="11.5" fill="#5c5340">(demo) → browser (fallback)</text>
+  <text x="668" y="172" font-size="11.5" fill="#5c5340">split for the ear and the quota;</text>
+  <text x="668" y="188" font-size="11.5" fill="#5c5340">PCM → WAV server-side (D-037)</text>
+
+  <!-- barge-in / background -->
+  <rect x="654" y="224" width="248" height="106" rx="9" fill="#fdf6e6" stroke="#c8912f" stroke-width="1.2"/>
+  <text x="668" y="246" font-size="13.5" font-weight="700" fill="#5c4310">Barge-in + background</text>
+  <text x="668" y="266" font-size="11.5" fill="#6d5518">≥2 real words cut the turn; the gate</text>
+  <text x="668" y="282" font-size="11.5" fill="#6d5518">closes, no later frame is sent (D-056)</text>
+  <text x="668" y="304" font-size="11.5" fill="#6d5518">fact extractor + turn_metrics run</text>
+  <text x="668" y="320" font-size="11.5" fill="#6d5518">inside the socket's life (D-051)</text>
+
+  <path d="M634 150 H650" stroke="#8a7a5c" stroke-width="1.4" marker-end="url(#a)"/>
+  <path d="M520 210 V220" stroke="#8a7a5c" stroke-width="1.4" marker-end="url(#a)"/>
+  <path d="M634 262 H650" stroke="#8a7a5c" stroke-width="1.4" marker-end="url(#a)"/>
+  <text x="406" y="360" font-size="11.5" fill="#6b6352">transcript → reply text → spoken chunks, streamed down as they are made</text>
+  <text x="406" y="382" font-size="11.5" fill="#6b6352">a cut turn writes no metrics row; the exchange is still remembered</text>
+
+  <!-- ========== right column ========== -->
+  <rect x="944" y="92" width="220" height="118" rx="10" fill="#fbf8f2" stroke="#3a3428" stroke-width="1.4"/>
+  <text x="958" y="116" font-size="14" font-weight="700" fill="#1b1811">Supabase Postgres</text>
+  <text x="958" y="136" font-size="11.5" fill="#5c5340">users · sessions · messages</text>
+  <text x="958" y="154" font-size="11.5" fill="#5c5340">facts (English keys, D-014)</text>
+  <text x="958" y="172" font-size="11.5" fill="#5c5340">bookings · turn_metrics</text>
+  <text x="958" y="194" font-size="10.5" fill="#8a6a1a">eu-west-1 — a turn makes ~8 hops here</text>
+
+  <rect x="944" y="224" width="220" height="106" rx="10" fill="#fbf8f2" stroke="#3a3428" stroke-width="1.4"/>
+  <text x="958" y="248" font-size="14" font-weight="700" fill="#1b1811">External APIs</text>
+  <text x="958" y="270" font-size="11.5" fill="#5c5340">Aladhan — prayer times</text>
+  <text x="958" y="286" font-size="11" fill="#8a6a1a">method follows the city's country (D-054)</text>
+  <text x="958" y="306" font-size="11.5" fill="#5c5340">Open-Meteo — forecast + geocoding</text>
+  <text x="958" y="322" font-size="11" fill="#8a6a1a">queried in English, always</text>
+
+  <path d="M918 150 H940" stroke="#8a7a5c" stroke-width="1.4" marker-end="url(#a)"/>
+  <path d="M918 262 H940" stroke="#8a7a5c" stroke-width="1.4" marker-end="url(#a)"/>
+
+  <text x="16" y="30" font-size="17" font-weight="700" fill="#1b1811">Sarjy — one WebSocket, three swappable stages</text>
+  <text x="470" y="30" font-size="12" fill="#6b6352">audio goes up the socket and voice comes back down it; everything between is one turn's work</text>
+</svg>
